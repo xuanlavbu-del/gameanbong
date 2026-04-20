@@ -110,7 +110,7 @@
 
     player.x = frame.width / 2;
     player.y = frame.height / 2;
-    player.radius = 50;
+    player.radius = 35;
   }
   function handleEat(player, ball, index) {
     let dx = ball.x - player.x;
@@ -139,7 +139,7 @@
 
   // ================= TẠO BÓNG RANDOM =================
   function createRandomBall(minSpeed, maxSpeed) {
-    let radius = random(20, 55);
+    let radius = random(20, 45);
 
     let x = random(radius, frame.width - radius);
     let y = random(radius, frame.height - radius);
