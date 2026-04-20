@@ -253,7 +253,7 @@
       b2.moveX = v2nAfter * nx + v2t * tx;
       b2.moveY = v2nAfter * ny + v2t * ty;
 
-      // ===== FIX DÍNH (rất quan trọng) =====
+      // ===== FIX DÍNH  =====
       let overlap = b1.radius + b2.radius - distance;
       b1.x -= nx * overlap / 2;
       b1.y -= ny * overlap / 2;
