@@ -134,7 +134,7 @@
 
   // ================= TẠO BÓNG RANDOM =================
   function createRandomBall(minSpeed, maxSpeed) {
-    let radius = random(20, 45);
+    let radius = random(20, 40);
 
     let x = random(radius, frame.width - radius);
     let y = random(radius, frame.height - radius);
@@ -266,7 +266,7 @@
       b2.moveX = v2nAfter * nx + v2t * tx;
       b2.moveY = v2nAfter * ny + v2t * ty;
 
-      // ===== FIX DÍNH  =====
+      // ===== tránh DÍNH  =====
       let overlap = b1.radius + b2.radius - distance;
       b1.x -= nx * overlap / 2;
       b1.y -= ny * overlap / 2;
