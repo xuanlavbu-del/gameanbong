@@ -34,6 +34,16 @@
   }
 
 
+  function randomColor() {
+    return `hsl(${Math.random() * 360}, 70%, 50%)`;
+  }
+
+  const eatSound = new Audio("eat.mp3");
+  const loseSound = new Audio("lose.mp3");
+  const winSound = new Audio("win.mp3");
+
+  let gameOver = false;
+
   class Ball {
     constructor(x, y, radius, moveX, moveY, color) {
       this.x = x;
@@ -76,16 +86,20 @@
     }
 
   }
+
+
   function resetGame() {
     balls = [];
     for (let i = 0; i < 20; i++) {
       balls.push(createRandomBall(2, 6));
     }
-
     player.x = frame.width / 2;
     player.y = frame.height / 2;
-    player.radius = 35;
+    player.radius = 30;
   }
+
+
+
   function handleEat(player, ball, index) {
     let dx = ball.x - player.x;
     let dy = ball.y - player.y;
@@ -96,17 +110,24 @@
         // ăn bóng nhỏ
         player.radius += ball.radius * 0.2;
         balls.splice(index, 1);
+        eatSound.currentTime = 0;
+        eatSound.play();
+
       } else {
         // thua
-        alert("GAME OVER!");
-        resetGame();
+        gameOver = true;
+        loseSound.currentTime = 0;
+        loseSound.play();
+        setTimeout(() => {
+          resetGame();
+          start()
+        }, 500);
+
       }
     }
   }
 
-  function randomColor() {
-    return `hsl(${Math.random() * 360}, 70%, 50%)`;
-  }
+
 
 
 
@@ -127,25 +148,32 @@
   let balls = [];
 
   //tạo bóng người chơi
-
   let player = new Ball(
           frame.width / 2,
           frame.height / 2,
-          35,
+          30,
           0,
           0,
           'black'
   );
 
   // tạo 20 bóng
-  for (let i = 0; i < 25;i++) {
+  for (let i = 0; i < 20;i++) {
     balls.push(createRandomBall(2, 6));
   }
+
+
 
   const keys = {};
   window.addEventListener("keydown", e => keys[e.key] = true);
   window.addEventListener("keyup", e => keys[e.key] = false);
-
+  window.addEventListener("keydown", e => {
+    if (e.key === "r" && gameOver) {
+      gameOver = false;
+      resetGame();
+      start();
+    }
+  });
   function movePlayer() {
     let speed = 4;
 
@@ -160,14 +188,20 @@
   }
 
   // ================= LOOP =================
-
   function start() {
     drawTool.clearRect(0, 0, frame.width, frame.height);
+    if (gameOver) {
+      drawTool.fillStyle = "black";
+      drawTool.font = "50px Arial";
+      drawTool.fillText("GAME OVER", frame.width / 2 - 150, frame.height / 2);
 
+      drawTool.font = "20px Arial";
+      drawTool.fillText("Press R to restart", frame.width / 2 - 100, frame.height / 2 + 40);
+      return; // dừng game
+    }
     movePlayer(); // di chuyển player
     player.draw();  // ✅ vẽ player
 
-    // di chuyển
     balls.forEach(ball => ball.move());
 
     // kiểm tra va chạm từng cặp
@@ -184,8 +218,13 @@
 
     // 🏆 THẮNG
     if (balls.length === 0) {
-      alert("YOU WIN 🎉");
-      location.reload();
+      winSound.currentTime = 0;
+      winSound.play();
+
+      setTimeout(() => {
+        alert("YOU WIN 🎉");
+        location.reload();
+      }, 500);
       return;
     }
     requestAnimationFrame(start);
